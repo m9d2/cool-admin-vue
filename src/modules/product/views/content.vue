@@ -29,6 +29,8 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted, reactive } from 'vue';
+
 defineOptions({
 	name: "product-content",
 });
@@ -36,7 +38,6 @@ defineOptions({
 import { useCrud, useTable, useUpsert, useSearch } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { useI18n } from "vue-i18n";
-import { reactive } from "vue";
 
 const { service } = useCool();
 const { t } = useI18n();
@@ -46,16 +47,37 @@ const options = reactive({
 		{
 			label: t('竖屏'),
 			value: 1,
-			type: 'warning'
 		},
 		{
 			label: t('横屏'),
 			value: 2,
-			type: 'success'
 		}
-	]
-});
+	],
+	supportTemplate: [
+		{
+			label: t('是'),
+			value: 0,
+		},
+		{
+			label: t('否'),
+			value: 1,
+		}
+	],
+	status: [
+		{
+			label: t('正常'),
+			value: 0,
+		},
+		{
+			label: t('禁用'),
+			value: 1,
+		}
+	],
+	stack: [] as Array<{ label: string; value: number }>,
+	category: [] as Array<{ label: string; value: number }>,
+	source: [] as Array<{ label: string; value: number }>,
 
+});
 
 // cl-upsert
 const Upsert = useUpsert({
@@ -70,42 +92,42 @@ const Upsert = useUpsert({
 		{
 			label: t("方图"),
 			prop: "picture",
-			component: { name: "cl-upload", props: { clearable: true } },
+			component: {
+				name: 'cl-upload',
+				props: {
+					text: t('选择图片')
+				}
+			},
 			span: 12,
-			required: true,
 		},
 		{
 			label: t("长图"),
 			prop: "longPicture",
-			component: { name: "cl-upload", props: { clearable: true } },
+			component: {
+				name: 'cl-upload',
+				props: {
+					text: t('选择图片')
+				}
+			},
 			span: 12,
-			required: true,
-		},
-		{
-			label: t("技术栈"),
-			prop: "stack",
-			component: { name: "el-input", props: { clearable: true } },
-			span: 12,
-			required: true,
 		},
 		{
 			label: t("方向"),
 			prop: "direction",
-			component: { name: "el-input", props: { clearable: true } },
-			span: 12,
-			required: true,
-		},
-		{
-			label: t("选择分类"),
-			prop: "categoryId",
-			component: { name: "el-input", props: { clearable: true } },
+			component: {
+				name: 'el-select',
+				options: options.direction,
+			},
 			span: 12,
 			required: true,
 		},
 		{
 			label: t("是否支持模板开发"),
-			prop: "suportTemplate",
-			component: { name: "el-input", props: { clearable: true } },
+			prop: "supportTemplate",
+			component: {
+				name: 'el-radio-group',
+				options: options.supportTemplate,
+			},
 			span: 12,
 			required: true,
 		},
@@ -114,54 +136,38 @@ const Upsert = useUpsert({
 			prop: "version",
 			component: { name: "el-input", props: { clearable: true } },
 			span: 12,
-			required: true,
 		},
 		{
 			label: t("产品链接"),
 			prop: "productUrl",
 			component: { name: "el-input", props: { clearable: true } },
 			span: 12,
-			required: true,
 		},
 		{
 			label: t("APK包"),
 			prop: "apkUrl",
 			component: { name: "el-input", props: { clearable: true } },
 			span: 12,
-			required: true,
 		},
 		{
 			label: t("视频"),
-			prop: "vedioUrl",
+			prop: "videoUrl",
 			component: { name: "el-input", props: { clearable: true } },
 			span: 12,
-			required: true,
 		},
 		{
 			label: t("产品简介"),
 			prop: "introduction",
 			component: { name: "el-input", props: { clearable: true } },
 			span: 12,
-			required: true,
-		},
-		{
-			label: t("选择来源"),
-			prop: "houseRelationId",
-			component: { name: "el-input", props: { clearable: true } },
-			span: 12,
-			required: true,
-		},
-		{
-			label: t("最后修改人"),
-			prop: "lastModifyUser",
-			component: { name: "el-input", props: { clearable: true } },
-			span: 12,
-			required: true,
 		},
 		{
 			label: t("状态"),
 			prop: "status",
-			component: { name: "el-input", props: { clearable: true } },
+			component: {
+				name: 'el-radio-group',
+				options: options.status
+			},
 			span: 12,
 			required: true,
 		},
@@ -170,7 +176,30 @@ const Upsert = useUpsert({
 			prop: "remark",
 			component: { name: "el-input", props: { clearable: true } },
 			span: 12,
-			required: true,
+		},
+		{
+			label: t("技术栈"),
+			prop: "productStack",
+			component: {name: 'el-select',
+				options: options.stack,
+			},
+			span: 12,
+		},
+		{
+			label: t("分类"),
+			prop: "productCategory",
+			component: {name: 'el-select',
+				options: options.category,
+			},
+			span: 12,
+		},
+		{
+			label: t("来源"),
+			prop: "productSource",
+			component: {name: 'el-select',
+				options: options.source,
+			},
+			span: 12,
 		},
 	],
 });
@@ -180,25 +209,25 @@ const Table = useTable({
 	columns: [
 		{ type: "selection" },
 		{ label: t("产品名称"), prop: "productName", minWidth: 120 },
-		{ label: t("方图"), prop: "picture", minWidth: 120, component: { name: "cl-image" } },
-		{ label: t("长图"), prop: "longPicture", minWidth: 120, component: { name: "cl-image" } },
-		{ label: t("技术栈"), prop: "stack", minWidth: 120 },
-		{ label: t("方向"), prop: "direction", minWidth: 120, dict: options.direction },
-		{ label: t("分类"), prop: "categoryId", minWidth: 120 },
-		{ label: t("是否支持模板开发"), prop: "suportTemplate", minWidth: 120 },
+		{ label: t("方图"), prop: "picture", minWidth: 120 },
+		{ label: t("长图"), prop: "longPicture", minWidth: 120 },
+		{ label: t("方向"), prop: "direction", minWidth: 120 },
+		{
+			label: t("是否支持模板开发"),
+			prop: "supportTemplate",
+			minWidth: 120,
+		},
 		{ label: t("版本号"), prop: "version", minWidth: 120 },
 		{ label: t("产品链接"), prop: "productUrl", minWidth: 120 },
 		{ label: t("APK包"), prop: "apkUrl", minWidth: 120 },
-		{ label: t("视频"), prop: "vedioUrl", minWidth: 120 },
+		{ label: t("视频"), prop: "videoUrl", minWidth: 120 },
 		{ label: t("产品简介"), prop: "introduction", minWidth: 120 },
-		{ label: t("来源"), prop: "houseRelationId", minWidth: 120 },
 		{ label: t("最后修改人"), prop: "lastModifyUser", minWidth: 120 },
-		{
-			label: t("状态"), prop: "status", minWidth: 120, component: {
-				name: 'cl-switch'
-			}
-		},
+		{ label: t("状态"), prop: "status", minWidth: 120 },
 		{ label: t("备注"), prop: "remark", minWidth: 120 },
+		{ label: t("ID"), prop: "productStack", minWidth: 120 },
+		{ label: t("ID"), prop: "productCategory", minWidth: 120 },
+		{ label: t("ID"), prop: "productSource", minWidth: 120 },
 		{
 			label: t("创建时间"),
 			prop: "createTime",
@@ -234,4 +263,9 @@ const Crud = useCrud(
 function refresh(params?: any) {
 	Crud.value?.refresh(params);
 }
+
+onMounted(() => {
+
+})
+
 </script>
