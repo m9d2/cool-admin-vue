@@ -264,8 +264,22 @@ function refresh(params?: any) {
 	Crud.value?.refresh(params);
 }
 
-onMounted(() => {
+onMounted(async () => {
+	const category = await service.product.category.list()
+	const source = await service.product.source.list()
+	const stack = await service.product.stack.list()
 
+	category.forEach((item: any) => {
+		options.category.push({label: item.categoryName, value: item.id})
+	});
+
+	source.forEach((item: any) => {
+		options.source.push({label: item.sourceName, value: item.id})
+	})
+
+	stack.forEach((item: any) => {
+		options.stack.push({label: item.stackName, value: item.id})
+	});
 })
 
 </script>
