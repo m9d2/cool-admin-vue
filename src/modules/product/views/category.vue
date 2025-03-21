@@ -141,9 +141,13 @@ const Table = useTable({
 		{ type: "selection" },
 		{ label: t("类型名称"), prop: "categoryName", minWidth: 120 },
 		{ label: t("产品数量"), prop: "productNum", minWidth: 120 },
-		{ label: t("图片"), prop: "picture", minWidth: 120, component: { name: 'cl-image'} },
-		{ label: t("排序"), prop: "sort", minWidth: 120 },
-		{ label: t("状态"), prop: "status", minWidth: 120, dict: options.status },
+		{ label: t("图片"), prop: "picture", minWidth: 120, component: { name: 'cl-image' } },
+		{ label: t("排序"), prop: "sort", minWidth: 120, sortable: "custom", },
+		{
+			label: t("状态"), prop: "status", minWidth: 120, dict: options.status, sortable: "custom", component: {
+				name: 'cl-switch'
+			}
+		},
 		{ label: t("备注"), prop: "remark", minWidth: 120 },
 		{ label: t("节点类型"), prop: "nodeType", minWidth: 120 },
 		{ label: t("父节点ID"), prop: "parentNodeId", minWidth: 120 },

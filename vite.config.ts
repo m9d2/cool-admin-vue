@@ -42,6 +42,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
 		],
 		base: "/",
 		server: {
+			allowedHosts: true,
 			port: 9000,
 			proxy,
 			hmr: {

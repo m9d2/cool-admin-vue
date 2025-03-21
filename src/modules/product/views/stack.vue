@@ -1,31 +1,42 @@
 <template>
-	<cl-crud ref="Crud">
-		<cl-row>
-			<!-- 刷新按钮 -->
-			<cl-refresh-btn />
-			<!-- 新增按钮 -->
-			<cl-add-btn />
-			<!-- 删除按钮 -->
-			<cl-multi-delete-btn />
-			<cl-flex1 />
-			<!-- 条件搜索 -->
-			<cl-search ref="Search" />
-		</cl-row>
+	<cl-view-group ref="ViewGroup">
+		<template #left>
+			<!-- 部门列表 -->
+			<stack-catalog-list @refresh="refresh" @click-row="clickRow" />
+		</template>
 
-		<cl-row>
-			<!-- 数据表格 -->
-			<cl-table ref="Table" />
-		</cl-row>
+		<template #right>
+			<cl-crud ref="Crud">
+				<cl-row>
+					<el-button @click="createCatalog()" type="primary">
+						{{ $t('创建目录') }}
+					</el-button>
+					<el-button @click="createStack()" type="primary">
+						{{ $t('添加技术栈') }}
+					</el-button>
+					<!-- 刷新按钮 -->
+					<cl-refresh-btn />
+					<cl-flex1 />
+					<!-- 条件搜索 -->
+					<cl-search-key :placeholder="$t('搜索名称')" />
+				</cl-row>
 
-		<cl-row>
-			<cl-flex1 />
-			<!-- 分页控件 -->
-			<cl-pagination />
-		</cl-row>
+				<cl-row>
+					<!-- 数据表格 -->
+					<cl-table ref="Table" />
+				</cl-row>
 
-		<!-- 新增、编辑 -->
-		<cl-upsert ref="Upsert" />
-	</cl-crud>
+				<cl-row>
+					<cl-flex1 />
+					<!-- 分页控件 -->
+					<cl-pagination />
+				</cl-row>
+
+				<!-- 新增、编辑 -->
+				<cl-upsert ref="Upsert" />
+			</cl-crud>
+		</template>
+	</cl-view-group>
 </template>
 
 <script lang="ts" setup>
@@ -38,6 +49,7 @@ defineOptions({
 import { useCrud, useTable, useUpsert, useSearch } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { useI18n } from "vue-i18n";
+import StackCatalogList from "./components/stack_catalog_list.vue";
 
 const { service } = useCool();
 const { t } = useI18n();
@@ -81,7 +93,8 @@ const Upsert = useUpsert({
 		{
 			label: t("选择父节点"),
 			prop: "parentId",
-			component: {name: 'el-select',
+			component: {
+				name: 'el-select',
 				options: options.parent,
 			},
 			span: 24,
@@ -102,8 +115,6 @@ const Table = useTable({
 		{ label: t("技术栈"), prop: "stackName", minWidth: 120 },
 		{ label: t("备注"), prop: "remark", minWidth: 120 },
 		{ label: t("最后修改人"), prop: "lastModifyUser", minWidth: 120 },
-		{ label: t("节点类型"), prop: "type", minWidth: 120, dict: options.type },
-		{ label: t("父节点ID"), prop: "parentId", minWidth: 120 },
 		{
 			label: t("创建时间"),
 			prop: "createTime",
@@ -140,14 +151,30 @@ function refresh(params?: any) {
 	Crud.value?.refresh(params);
 }
 
+function clickRow(item?: Eps.ProductStackEntity) {
+	console.log(item);
+	refresh({ parentId: item?.id });
+}
+
+function createCatalog() {
+	Upsert.value.add({
+
+	});
+}
+
+function createStack() {
+	Upsert.value.add({
+
+	});
+}
+
 onMounted(() => {
 	service.product.stack.list().then((res: any) => {
-		res.forEach((item: any) => {
-			options.parent.push({label: item.stackName, value: item.id})
-		});
+		if (res) {
+			res.forEach((item: any) => {
+				options.parent.push({ label: item.stackName, value: item.id })
+			});
+		}
 	});
-
-
-
 })
 </script>

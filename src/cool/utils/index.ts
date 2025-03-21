@@ -1,6 +1,7 @@
 import { isArray, isNumber, isString, orderBy } from 'lodash-es';
 import { resolveComponent } from 'vue';
 import storage from './storage';
+import dayjs from 'dayjs';
 
 // 首字母大写
 export function firstUpperCase(value: string): string {
@@ -287,6 +288,14 @@ export function isPromise(val: any) {
 export function parsePx(val: string | number) {
 	return isNumber(val) ? `${val}px` : val;
 }
+
+export const formatDate = (datetime) => {
+	return dayjs(datetime).format('YYYY-MM-DD');
+  };
+  
+export const formatTime = (datetime) => {
+	return dayjs(datetime).format('HH:mm:ss');
+};
 
 // 延迟
 export function sleep(duration: number) {

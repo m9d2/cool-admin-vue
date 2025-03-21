@@ -665,7 +665,7 @@ declare namespace Eps {
 		/**
 		 * 方向 1-竖屏 2-横屏
 		 */
-		direction?: string;
+		direction?: number;
 
 		/**
 		 * 是否支持模板开发 0-是 1-否

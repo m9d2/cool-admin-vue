@@ -1,5 +1,8 @@
 <template>
-	<span class="cl-date-text">{{ value }}</span>
+	<span class="cl-date-text">
+		{{ date }}<br />
+		{{ time }}
+	</span>
 </template>
 
 <script lang="ts" setup>
@@ -12,13 +15,21 @@ import dayjs from 'dayjs';
 
 const props = defineProps({
 	modelValue: [String, Number],
-	format: {
+	dateFormat: {
 		type: String,
-		default: 'YYYY-MM-DD HH:mm:ss'
+		default: 'YYYY-MM-DD'
+	},
+	timeFormat: {
+		type: String,
+		default: 'HH:mm:ss'
 	}
 });
 
-const value = computed(() => {
-	return props.modelValue ? dayjs(props.modelValue).format(props.format) : '';
+const date = computed(() => {
+	return props.modelValue ? dayjs(props.modelValue).format(props.dateFormat) : '';
+});
+
+const time = computed(() => {
+	return props.modelValue ? dayjs(props.modelValue).format(props.timeFormat) : '';
 });
 </script>

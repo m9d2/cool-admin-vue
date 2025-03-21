@@ -174,13 +174,14 @@ const Upsert = useUpsert({
 		{
 			label: t("备注"),
 			prop: "remark",
-			component: { name: "el-input", props: { clearable: true } },
+			component: { name: "el-input", props: { clearable: true, type: 'textarea' } },
 			span: 12,
 		},
 		{
 			label: t("技术栈"),
 			prop: "productStack",
-			component: {name: 'el-select',
+			component: {
+				name: 'el-select',
 				options: options.stack,
 			},
 			span: 12,
@@ -188,7 +189,8 @@ const Upsert = useUpsert({
 		{
 			label: t("分类"),
 			prop: "productCategory",
-			component: {name: 'el-select',
+			component: {
+				name: 'el-select',
 				options: options.category,
 			},
 			span: 12,
@@ -196,7 +198,8 @@ const Upsert = useUpsert({
 		{
 			label: t("来源"),
 			prop: "productSource",
-			component: {name: 'el-select',
+			component: {
+				name: 'el-select',
 				options: options.source,
 			},
 			span: 12,
@@ -209,13 +212,14 @@ const Table = useTable({
 	columns: [
 		{ type: "selection" },
 		{ label: t("产品名称"), prop: "productName", minWidth: 120 },
-		{ label: t("方图"), prop: "picture", minWidth: 120 },
-		{ label: t("长图"), prop: "longPicture", minWidth: 120 },
-		{ label: t("方向"), prop: "direction", minWidth: 120 },
+		{ label: t("方图"), prop: "picture", minWidth: 120, component: { name: 'cl-image' } },
+		{ label: t("长图"), prop: "longPicture", minWidth: 120, component: { name: 'cl-image' } },
+		{ label: t("方向"), prop: "direction", minWidth: 120, dict: options.direction },
 		{
 			label: t("是否支持模板开发"),
 			prop: "supportTemplate",
 			minWidth: 120,
+			dict: options.supportTemplate
 		},
 		{ label: t("版本号"), prop: "version", minWidth: 120 },
 		{ label: t("产品链接"), prop: "productUrl", minWidth: 120 },
@@ -223,11 +227,11 @@ const Table = useTable({
 		{ label: t("视频"), prop: "videoUrl", minWidth: 120 },
 		{ label: t("产品简介"), prop: "introduction", minWidth: 120 },
 		{ label: t("最后修改人"), prop: "lastModifyUser", minWidth: 120 },
-		{ label: t("状态"), prop: "status", minWidth: 120 },
+		{ label: t("状态"), prop: "status", minWidth: 120, dict: options.status },
 		{ label: t("备注"), prop: "remark", minWidth: 120 },
-		{ label: t("ID"), prop: "productStack", minWidth: 120 },
-		{ label: t("ID"), prop: "productCategory", minWidth: 120 },
-		{ label: t("ID"), prop: "productSource", minWidth: 120 },
+		{ label: t("技术栈"), prop: "stackName", minWidth: 120 },
+		{ label: t("类型"), prop: "productName", minWidth: 120 },
+		{ label: t("源"), prop: "sourceName", minWidth: 120 },
 		{
 			label: t("创建时间"),
 			prop: "createTime",
@@ -240,7 +244,7 @@ const Table = useTable({
 			prop: "updateTime",
 			minWidth: 170,
 			sortable: "custom",
-			component: { name: "cl-date-text" },
+			component: { name: "cl-date-text"},
 		},
 		{ type: "op", buttons: ["edit", "delete"] },
 	],
@@ -270,15 +274,15 @@ onMounted(async () => {
 	const stack = await service.product.stack.list()
 
 	category.forEach((item: any) => {
-		options.category.push({label: item.categoryName, value: item.id})
+		options.category.push({ label: item.categoryName, value: item.id })
 	});
 
 	source.forEach((item: any) => {
-		options.source.push({label: item.sourceName, value: item.id})
+		options.source.push({ label: item.sourceName, value: item.id })
 	})
 
 	stack.forEach((item: any) => {
-		options.stack.push({label: item.stackName, value: item.id})
+		options.stack.push({ label: item.stackName, value: item.id })
 	});
 })
 
